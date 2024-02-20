@@ -145,7 +145,7 @@ Resources:
     Properties:
       Domain: "sales-user-pool-domain"
       UserPoolId: !Ref UserPoolSales
-  SalesFunction:
+  SignUpClientFunction:
     Type: AWS::Serverless::Function
     Properties:
       Handler: clients/sign_up.sign_up_client
@@ -154,9 +154,52 @@ Resources:
         SignUp:
           Type: Api
           Properties:
-            Path: /sign_up
+            Path: /Client
             Method: post
-
+  GetClientFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: clients/get_client.get_client
+      Role: !GetAtt SalesRole.Arn
+      Events:
+        SignUp:
+          Type: Api
+          Properties:
+            Path: /Client/{UserSub}
+            Method: get
+  SignUpSellerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: sellers/sign_up.sign_up_seller
+      Role: !GetAtt SalesRole.Arn
+      Events:
+        SignUp:
+          Type: Api
+          Properties:
+            Path: /Seller
+            Method: post
+  GetSellerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: sellers/get_seller.get_seller
+      Role: !GetAtt SalesRole.Arn
+      Events:
+        SignUp:
+          Type: Api
+          Properties:
+            Path: /Seller/{UserSub}
+            Method: get
+  GetSellersFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: sellers/get_sellers.get_sellers
+      Role: !GetAtt SalesRole.Arn
+      Events:
+        SignUp:
+          Type: Api
+          Properties:
+            Path: /Seller
+            Method: get
 
 # Outputs:
 #   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
