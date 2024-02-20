@@ -5,7 +5,7 @@ import boto3
 import os
 
 client_id = os.environ.get('CLIENT_ID')
-user_pool_id = os.environ.get('USER_POOL_ID')
+user_pool_id = os.environ.get('USER_POOL')
 group_name = os.environ.get('CLIENTS_GROUP')
 
 def sign_up_client(event,context):
@@ -24,13 +24,13 @@ def sign_up_client(event,context):
 
         response = boto_client.sign_up(
             ClientId = client_id,
-            Username= user_data['username'],
+            Username= user_data['email'],
             Password= user_data['password']
         )
 
         boto_client.admin_add_user_to_group(
             UserPoolId=user_pool_id,
-            Username=user_data['username'],
+            Username=user_data['email'],
             GroupName=group_name
         )
     except boto_client.exceptions.InvalidPasswordException:
@@ -44,7 +44,7 @@ def sign_up_client(event,context):
         return {
             "statusCode": 500,
             "body": json.dumps({
-                "message": 'cognit error: '+ex,
+                "message": 'cognito error: '+str(ex),
             }),
         }
     
@@ -55,14 +55,14 @@ def sign_up_client(event,context):
         return {
             "statusCode": 500,
             "body": json.dumps({
-                "message": 'pynamo error: '+ex,
+                "message": 'pynamo error: '+str(ex),
             }),
         }
     
     return {
         "statusCode": 200,
         "body": json.dumps({
-            "message": 'user',
+            "message": 'user succesfully signed_up',
         }),
     }
     
