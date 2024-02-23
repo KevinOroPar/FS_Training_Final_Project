@@ -11,11 +11,11 @@ group_name = os.environ.get('CLIENTS_GROUP')
 def sign_up_client(event,context):
     user_data = json.loads(event['body'])
 
-    if (not user_data):
+    if (not ('email' in user_data and 'password' in user_data and 'full_name' in user_data and 'mobile' in user_data)):
         return {
             "statusCode": 400,
             "body": json.dumps({
-                "message": "no data in body section",
+                "message": "incorrect body section",
             }),
         }
     
@@ -51,7 +51,7 @@ def sign_up_client(event,context):
         return {
             "statusCode": 500,
             "body": json.dumps({
-                "message": 'cognito error: '+str(ex),
+                "message": f'cognito error: {str(ex)}',
             }),
         }
     
@@ -62,7 +62,7 @@ def sign_up_client(event,context):
         return {
             "statusCode": 500,
             "body": json.dumps({
-                "message": 'pynamo error: '+str(ex),
+                "message": f'pynamo error: {str(ex)}',
             }),
         }
     
