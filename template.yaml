@@ -151,7 +151,7 @@ Resources:
       Handler: clients/sign_up.sign_up_client
       Role: !GetAtt SalesRole.Arn
       Events:
-        SignUp:
+        SignUpClient:
           Type: Api
           Properties:
             Path: /Client
@@ -162,7 +162,7 @@ Resources:
       Handler: clients/get_client.get_client
       Role: !GetAtt SalesRole.Arn
       Events:
-        SignUp:
+        GetClient:
           Type: Api
           Properties:
             Path: /Client/{UserSub}
@@ -173,7 +173,7 @@ Resources:
       Handler: sellers/sign_up.sign_up_seller
       Role: !GetAtt SalesRole.Arn
       Events:
-        SignUp:
+        SignUpSeller:
           Type: Api
           Properties:
             Path: /Seller
@@ -184,7 +184,7 @@ Resources:
       Handler: sellers/get_seller.get_seller
       Role: !GetAtt SalesRole.Arn
       Events:
-        SignUp:
+        GetSeller:
           Type: Api
           Properties:
             Path: /Seller/{UserSub}
@@ -195,11 +195,69 @@ Resources:
       Handler: sellers/get_sellers.get_sellers
       Role: !GetAtt SalesRole.Arn
       Events:
-        SignUp:
+        GetSellers:
           Type: Api
           Properties:
             Path: /Seller
             Method: get
+  AddProductFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: products/add_product.add_product
+      Role: !GetAtt SalesRole.Arn
+      Events:
+        AddProduct:
+          Type: Api
+          Properties:
+            Path: /Product
+            Method: post
+  UpdateProductFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: products/update_product.update_product
+      Role: !GetAtt SalesRole.Arn
+      Events:
+        UpdateProduct:
+          Type: Api
+          Properties:
+            Path: /Product/{product_id}
+            Method: patch
+  GetProductsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: products/get_products.get_products
+      Role: !GetAtt SalesRole.Arn
+      Events:
+        GetProducts:
+          Type: Api
+          Properties:
+            Path: /Product
+            Method: get
+  AddPurchaseFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: purchase/add_purchase.add_purchase
+      Role: !GetAtt SalesRole.Arn
+      Events:
+        AddPurchase:
+          Type: Api
+          Properties:
+            Path: /Purchase
+            Method: post
+  GetPurchasesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: purchase/get_purchases.get_purchases
+      Role: !GetAtt SalesRole.Arn
+      Events:
+        GetPurchases:
+          Type: Api
+          Properties:
+            Path: /Purchase
+            Method: get
+      
+
+
 
 # Outputs:
 #   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
