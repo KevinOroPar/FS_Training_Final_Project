@@ -4,8 +4,7 @@ import json
 def get_sellers(event,context):
     seller_list = []
 
-    for seller in Seller.query('seller'):
-        
+    for seller in Seller.query('seller'):    
         seller_list.append({
         "id": seller.SK,
         "email": seller.email,

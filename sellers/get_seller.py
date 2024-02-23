@@ -2,14 +2,6 @@ from models.pynamo_models import Seller
 import json
 
 def get_seller(event,context):
-
-    if 'UserSub' not in event['pathParameters']:
-        return {
-            "statusCode": 404,
-            "body": json.dumps({
-                "message": "UserSub expected in path",
-            }),
-        }
     
     UserSub = event['pathParameters']['UserSub']
     for seller in Seller.query('seller',Seller.SK == UserSub):
