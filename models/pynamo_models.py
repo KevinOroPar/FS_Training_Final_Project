@@ -33,6 +33,7 @@ class Product(Model):
     name = UnicodeAttribute(default='')
     price = UnicodeAttribute(default='')
     category = UnicodeAttribute(default='')
+    seller_id = UnicodeAttribute(default='')
 
 class Purchase(Model):
     class Meta:
@@ -43,5 +44,5 @@ class Purchase(Model):
     client_name = UnicodeAttribute(default='')
     seller_name = UnicodeAttribute(default='')
     product_name = UnicodeAttribute(default='')
-    prize = UnicodeAttribute(default='')
+    price = UnicodeAttribute(default='')
     purchase_date = UnicodeAttribute(default='')
