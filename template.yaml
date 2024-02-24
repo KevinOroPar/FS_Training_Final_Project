@@ -113,9 +113,8 @@ Resources:
           RequireUppercase: true
           TemporaryPasswordValidityDays: 10
       VerificationMessageTemplate:
-        DefaultEmailOption: CONFIRM_WITH_CODE
-        EmailSubject: 'Código de autenticación AWS Test'
-        EmailMessage: 'Tu código es: {####}'
+        DefaultEmailOption: CONFIRM_WITH_LINK
+        EmailSubject: 'Confirmación de AWS'
       EmailConfiguration:
         EmailSendingAccount: COGNITO_DEFAULT
   UserPoolSalesClient:
@@ -123,6 +122,8 @@ Resources:
     Properties:
       UserPoolId: !Ref UserPoolSales
       AccessTokenValidity: 2
+      ExplicitAuthFlows:
+        - ALLOW_USER_PASSWORD_AUTH
       IdTokenValidity: 2
       PreventUserExistenceErrors: ENABLED
       RefreshTokenValidity: 30
@@ -255,6 +256,17 @@ Resources:
           Properties:
             Path: /Purchase
             Method: get
+  LogInFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: auth/log_in.log_in
+      Role: !GetAtt SalesRole.Arn
+      Events:
+        LogIn:
+          Type: Api
+          Properties:
+            Path: /Login
+            Method: post
       
 
 
