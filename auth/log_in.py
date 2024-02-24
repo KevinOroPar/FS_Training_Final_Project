@@ -14,8 +14,7 @@ def log_in(event,context):
             "body": json.dumps({
                 "message": "incorrect body section",
             }),
-        }
-    
+        }  
     try:
         boto_client = boto3.client('cognito-idp')
 
@@ -27,7 +26,13 @@ def log_in(event,context):
             },
             ClientId = client_id
         )
-        
+    except boto_client.exceptions.NotAuthorizedException:
+        return {
+            "statusCode": 401,
+            "body": json.dumps({
+                "message": "Incorrect username or password",
+            }),
+        }       
     except ClientError as ex:
         return {
             "statusCode": 500,
