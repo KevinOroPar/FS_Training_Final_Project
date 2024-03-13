@@ -1,4 +1,5 @@
 from botocore.exceptions import ClientError
+from jose import jwt
 import json
 import boto3
 import os
@@ -41,12 +42,23 @@ def log_in(event,context):
             }),
         }
     
+    access_token = response['AuthenticationResult']['AccessToken']
+    refresh_token = response['AuthenticationResult']['RefreshToken']
+    id_token = response['AuthenticationResult']['IdToken']
+    
+
+    claims = jwt.get_unverified_claims(access_token)
+    group_name = claims.get("cognito:groups")[0]
+    user_id = claims.get("username")
+    
     return {
         "statusCode": 200,
         "body": json.dumps({
             "message": 'logged in succesfully',
-            "session_token": response['AuthenticationResult']['AccessToken'],
-            "refresh_token": response['AuthenticationResult']['RefreshToken'],
-            "id_token": response['AuthenticationResult']['IdToken']
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "id_token": id_token,
+            "group_name": group_name,
+            "user_id": user_id
         })
     }

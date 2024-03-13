@@ -21,10 +21,15 @@ Globals:
         USER_POOL: !Ref UserPoolSales
         CLIENTS_GROUP: !Ref Clients
         SELLERS_GROUP: !Ref Sellers
-
-    # You can add LoggingConfig parameters such as the Logformat, Log Group, and SystemLogLevel or ApplicationLogLevel. Learn more here https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html#sam-function-loggingconfig.
-    LoggingConfig:
-      LogFormat: JSON
+  Api:
+    Auth:
+      Authorizers:
+        UserAuthorizer:
+          FunctionArn:
+            Fn::GetAtt:
+              - LambdaUserAuthorizer
+              - Arn
+          FunctionPayloadType: TOKEN
 Resources:
   SalesRole:
     Type: AWS::IAM::Role
@@ -121,12 +126,17 @@ Resources:
     Type: AWS::Cognito::UserPoolClient
     Properties:
       UserPoolId: !Ref UserPoolSales
-      AccessTokenValidity: 2
+      AccessTokenValidity: 1
       ExplicitAuthFlows:
         - ALLOW_USER_PASSWORD_AUTH
-      IdTokenValidity: 2
+        - ALLOW_REFRESH_TOKEN_AUTH
+      IdTokenValidity: 1
       PreventUserExistenceErrors: ENABLED
       RefreshTokenValidity: 30
+      TokenValidityUnits: 
+        AccessToken: days
+        IdToken: days
+        RefreshToken: days
       SupportedIdentityProviders:
         - COGNITO
   Clients:
@@ -188,8 +198,10 @@ Resources:
         GetSeller:
           Type: Api
           Properties:
-            Path: /Seller/{UserSub}
+            Path: /Seller/{user_id}
             Method: get
+            Auth:
+              Authorizer: UserAuthorizer
   GetSellersFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -267,6 +279,12 @@ Resources:
           Properties:
             Path: /Login
             Method: post
+  LambdaUserAuthorizer:
+    Type: AWS::Serverless::Function
+    Properties:
+      Role: !GetAtt SalesRole.Arn
+      Handler: auth/authorizer.custom_authorizer
+
       
 
 
