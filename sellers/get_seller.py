@@ -3,8 +3,10 @@ import json
 
 def get_seller(event,context):
     
-    UserSub = event['pathParameters']['UserSub']
-    for seller in Seller.query('seller',Seller.SK == UserSub):
+    user_id = event['pathParameters']['user_id']
+    
+    try:
+        seller = Seller.get('seller',user_id)
         return {
             "statusCode": 200,
             "body": json.dumps({
@@ -13,10 +15,10 @@ def get_seller(event,context):
                 "full_name": seller.full_name
             }),
         }
-    
-    return {
-        "statusCode": 404,
-        "body": json.dumps({
-            "message": "couldn't find a seller with the corresponding UserSub",
-        }),
-    }
+    except Exception:
+        return {
+            "statusCode": 404,
+            "body": json.dumps({
+                "message": "couldn't find a seller with the corresponding id",
+            }),
+        }
